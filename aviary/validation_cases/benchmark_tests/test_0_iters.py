@@ -21,12 +21,15 @@ class BaseProblemPhaseTestCase(unittest.TestCase):
         prob.load_inputs(input_filename, phase_info)
 
         prob.check_and_preprocess_inputs()
-
-        prob.build_model()
+        prob.add_pre_mission_systems()
+        prob.add_phases()
+        prob.add_post_mission_systems()
+        prob.link_phases()
         prob.add_driver('SLSQP', max_iter=0, verbosity=0)
         prob.add_design_variables()
         prob.add_objective(objective_type if objective_type else None)
         prob.setup()
+        prob.set_initial_guesses()
         prob.run_aviary_problem('dymos_solution.db', make_plots=False)
 
 

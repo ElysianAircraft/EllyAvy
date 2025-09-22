@@ -1686,17 +1686,19 @@ def create_phase_info(
 
     # write a python file with the phase information
     with open(filename, 'w') as f:
+        f.write("import numpy as np\n")
         f.write('phase_info = ')
         pp = pprint.PrettyPrinter(indent=4, stream=f, sort_dicts=False)
         pp.pprint(phase_info)
 
     # Check for 'ruff' and format the file
-    if shutil.which('ruff'):
-        subprocess.run(['ruff', filename])
-    else:
-        if shutil.which('autopep8'):
+    # CUASTOM FOR MY SYSTEM
+    if shutil.which('autopep8'):
             subprocess.run(['autopep8', '--in-place', '--aggressive', filename])
             print("File formatted using 'autopep8'")
+    else:
+        if shutil.which('ruff'):
+            subprocess.run(['ruff', filename])
         else:
             print(
                 "'ruff' or 'autopep8' are not installed. Please consider installing one of them "

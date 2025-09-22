@@ -153,9 +153,17 @@ prob = av.AviaryProblem()
 # Allow for user overrides here
 prob.load_inputs('models/aircraft/test_aircraft/aircraft_for_bench_solved2dof.csv', phase_info)
 
+# Preprocess inputs
 prob.check_and_preprocess_inputs()
 
-prob.build_model()
+prob.add_pre_mission_systems()
+
+prob.add_phases()
+
+prob.add_post_mission_systems()
+
+# Link phases and variables
+prob.link_phases()
 
 prob.add_driver('SLSQP', max_iter=100)
 
@@ -167,12 +175,14 @@ prob.add_objective('mass')
 
 prob.setup()
 
+prob.set_initial_guesses()
+
 prob.run_aviary_problem(record_filename='detailed_landing.db')
 
 try:
     loc = prob.get_outputs_dir()
     cr = om.CaseReader(f'{loc}/detailed_landing.db')
-except:
+except Exception as e:
     cr = om.CaseReader('detailed_landing.db')
 
 cases = cr.get_cases('problem')

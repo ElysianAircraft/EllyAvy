@@ -17,8 +17,10 @@ class CustomAeroBuilder(SubsystemBuilderBase):
         object label
     """
 
-    def __init__(self, name='simple_aero'):
+    def __init__(self, name='simple_aero', CD_zero=0.01, k=0.04):
         super().__init__(name)
+        self.CD_zero = CD_zero
+        self.k = k
 
     def build_mission(self, num_nodes, aviary_inputs, **kwargs):
         """
@@ -34,6 +36,8 @@ class CustomAeroBuilder(SubsystemBuilderBase):
         """
         aero_group = SimpleAeroGroup(
             num_nodes=num_nodes,
+            CD_zero=self.CD_zero,
+            k=self.k,
         )
         return aero_group
 

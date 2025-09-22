@@ -29,7 +29,14 @@ prob.load_inputs(
 
 prob.check_and_preprocess_inputs()
 
-prob.build_model()
+prob.add_pre_mission_systems()
+
+prob.add_phases()
+
+prob.add_post_mission_systems()
+
+# Link phases and variables
+prob.link_phases()
 
 prob.add_driver('SLSQP')
 
@@ -38,5 +45,7 @@ prob.add_design_variables()
 prob.add_objective()
 
 prob.setup()
+
+prob.set_initial_guesses()
 
 prob.run_aviary_problem(suppress_solver_print=True)

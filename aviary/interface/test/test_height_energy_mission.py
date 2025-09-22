@@ -286,9 +286,13 @@ class AircraftMissionTestSuite(unittest.TestCase):
 
         prob.load_inputs(csv_path, modified_phase_info)
         prob.check_and_preprocess_inputs()
-        prob.build_model()
+        prob.add_pre_mission_systems()
+        prob.add_phases()
+        prob.add_post_mission_systems()
+        prob.link_phases()
 
         prob.setup()
+        prob.set_initial_guesses()
 
         prob.run_model()
 

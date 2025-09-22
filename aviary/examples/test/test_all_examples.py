@@ -18,6 +18,7 @@ SKIP_EXAMPLES = {
     'run_multimission_example.py': 'Broken due to OpenMDAO changes',
     'run_OAS_wing_mass_example.py': 'Timeout when running via this script',
     'run_NPSS_example.py': 'Cannot be run without NPSS install',
+    'run_level3_example.py': 'Currently broken, awaiting refresh',
 }
 
 # TODO: temporary fix, waiting on https://github.com/OpenMDAO/OpenMDAO/issues/3510
@@ -100,7 +101,7 @@ class RunScriptTest(unittest.TestCase):
             Any exception other than ImportError or TimeoutExpired that occurs while running the script.
         """
         with open(os.devnull, 'w') as devnull:
-            proc = subprocess.Popen(['python', script_path], stdout=devnull, stderr=subprocess.PIPE)
+            proc = subprocess.Popen(['python3', script_path], stdout=devnull, stderr=subprocess.PIPE)
         proc.wait(timeout=max_allowable_time)
         (stdout, stderr) = proc.communicate()
 

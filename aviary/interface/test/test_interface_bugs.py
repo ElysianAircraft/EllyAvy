@@ -72,9 +72,17 @@ class PreMissionGroupTest(unittest.TestCase):
         )
         prob.load_inputs(csv_path, phase_info)
 
+        # Preprocess inputs
         prob.check_and_preprocess_inputs()
 
-        prob.build_model()
+        prob.add_pre_mission_systems()
+
+        prob.add_phases()
+
+        prob.add_post_mission_systems()
+
+        # Link phases and variables
+        prob.link_phases()
 
         prob.add_driver('SLSQP', verbosity=0)
 
@@ -99,11 +107,16 @@ class PreMissionGroupTest(unittest.TestCase):
         )
         prob.load_inputs(csv_path, phase_info)
 
+        # Preprocess inputs
         prob.check_and_preprocess_inputs()
 
         prob.add_pre_mission_systems()
+
         prob.add_phases(parallel_phases=False)
+
         prob.add_post_mission_systems()
+
+        # Link phases and variables
         prob.link_phases()
 
         prob.add_driver('SLSQP', verbosity=0)

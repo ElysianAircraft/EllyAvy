@@ -285,9 +285,13 @@ class TestExternalSubsystemBus(unittest.TestCase):
         prob.aviary_inputs.set_val('the_shape_for_the_thing_dim1', 4, meta_data=ExtendedMetaData)
         prob.check_and_preprocess_inputs()
 
-        prob.build_model()
+        prob.add_pre_mission_systems()
+        prob.add_phases()
+        prob.add_post_mission_systems()
+        prob.link_phases()
 
         prob.setup()
+        prob.set_initial_guesses()
 
         # Just run once to pass data.
         prob.run_model()

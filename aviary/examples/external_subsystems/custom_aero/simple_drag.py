@@ -56,9 +56,13 @@ class SimpleAeroGroup(om.Group):
         self.options.declare(
             'num_nodes', default=1, types=int, desc='Number of nodes along mission segment'
         )
+        self.options.declare("CD_zero", default=0.01, types=float, desc="CD0")
+        self.options.declare("k", default=0.04, types=float, desc="1/(pi*A*e)")
 
     def setup(self):
         nn = self.options['num_nodes']
+        CD_zero = self.options["CD_zero"]
+        k = self.options["k"]
 
         self.add_subsystem(
             'DynamicPressure',
@@ -83,14 +87,18 @@ class SimpleAeroGroup(om.Group):
 
         self.add_subsystem(
             'SimpleDragCoeff',
-            SimplestDragCoeff(num_nodes=nn),
+            SimplestDragCoeff(
+                num_nodes=nn,
+                CD_zero=CD_zero,
+                k=k),
             promotes_inputs=['cl'],
             promotes_outputs=['CD'],
         )
 
         self.add_subsystem(
             'SimpleDrag',
-            SimpleDrag(num_nodes=nn),
+            SimpleDrag(num_nodes=nn,
+                       ),
             promotes_inputs=[
                 'CD',
                 Dynamic.Atmosphere.DYNAMIC_PRESSURE,
