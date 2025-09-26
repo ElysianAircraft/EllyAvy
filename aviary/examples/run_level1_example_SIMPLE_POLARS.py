@@ -4,9 +4,9 @@ from copy import deepcopy
 
 import aviary.api as av
 from aviary.examples.external_subsystems.custom_aero.custom_aero_builder import CustomAeroBuilder
-from aviary.examples.external_subsystems.custom_mass.custom_mass_builder import WingMassBuilder
 from aviary.api import Aircraft, Mission, Settings, ProblemType
-import numpy as np
+from aviary.subsystems.energy.battery_builder import BatteryBuilder
+
 
 # Just do cruise in this example.
 # phase_info.pop('climb')
@@ -18,9 +18,16 @@ CD0 = 0.01
 k = 0.02 # 1/(np.pi*aspect_ratio*oswald_factor)
 
 phase_info = {
-    'pre_mission': {'include_takeoff': False, 'optimize_mass': True},
+    'pre_mission': {
+                'include_takeoff': False,
+                'external_subsystems': [BatteryBuilder()],
+                'optimize_mass': True,
+            },
     'climb': {
-        'external_subsystems': [CustomAeroBuilder()],
+        'external_subsystems': [
+            CustomAeroBuilder(),
+            BatteryBuilder()
+            ],
         'subsystem_options': {'core_aerodynamics': {'method': 'external'}},
         'user_options': {
             'num_segments': 5,
@@ -41,7 +48,10 @@ phase_info = {
         },
     },
     'cruise': {
-        'external_subsystems': [CustomAeroBuilder()],
+        'external_subsystems': [
+            CustomAeroBuilder(),
+            BatteryBuilder()
+            ],
         'subsystem_options': {'core_aerodynamics': {'method': 'external'}},
         'user_options': {
             'num_segments': 5,
@@ -62,7 +72,10 @@ phase_info = {
         },
     },
     'descent': {
-        'external_subsystems': [CustomAeroBuilder()],
+        'external_subsystems': [
+            CustomAeroBuilder(),
+            BatteryBuilder()
+            ],
         'subsystem_options': {'core_aerodynamics': {'method': 'external'}},
         'user_options': {
             'num_segments': 5,
@@ -133,6 +146,8 @@ if __name__ == '__main__':
     
     prob.model.set_val(Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS, 20_000, units='lbm')
     prob.model.set_val(Aircraft.Design.OPERATING_MASS, 175_400-80_000, units='lbm')
+    prob.set_val(av.Aircraft.Battery.PACK_ENERGY_DENSITY, 550, units='kJ/kg')
+    prob.set_val(av.Aircraft.Battery.PACK_MASS, 30_000, units='lbm')
 
     prob.set_initial_guesses()
 
@@ -141,6 +156,7 @@ if __name__ == '__main__':
     print(f"TOTAL_PAYLOAD_MASS: {prob[Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS][0]:.0f}")
     print(f"RANGE: {prob[Mission.Summary.RANGE][0]:.0f}")
     print(f"FUEL_BURNED: {prob[Mission.Summary.FUEL_BURNED][0]:.0f}")
+    print(f"BATTERY_MASS: {prob[Aircraft.Battery.PACK_MASS][0]:.0f}")
     print(f"OPERATING_MASS: {prob[Aircraft.Design.OPERATING_MASS][0]:.0f}")
     print(f"GROSS_MASS: {prob[Mission.Design.GROSS_MASS][0]:.0f}")
 

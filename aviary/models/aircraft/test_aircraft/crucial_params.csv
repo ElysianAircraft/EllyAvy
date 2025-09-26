@@ -1,4 +1,4 @@
-aircraft:engine:data_file,models/engines/turbofan_28k.csv,unitless
+aircraft:engine:data_file,models\aircraft\test_aircraft\turbofan_28k_with_electric.csv,unitless
 
 aircraft:engine:flight_idle_min_fraction,0.08,unitless
 
