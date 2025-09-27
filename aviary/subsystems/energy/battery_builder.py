@@ -30,7 +30,7 @@ class BatteryBuilder(SubsystemBuilderBase):
 
     default_name = 'battery'
 
-    def build_pre_mission(self, aviary_inputs=None):
+    def build_pre_mission(self, aviary_inputs=None):        
         return SizeBattery(aviary_inputs=aviary_inputs)
 
     def get_mass_names(self):
@@ -61,6 +61,9 @@ class BatteryBuilder(SubsystemBuilderBase):
             ],
             promotes_outputs=[('state_of_charge', Dynamic.Vehicle.BATTERY_STATE_OF_CHARGE)],
         )
+        
+        # TODO: quick fix, aware that im butchering the code here
+        # self.battery_soc = dict(aviary_inputs)['aircraft:battery:discharge_limit']
 
         return battery_group
 
@@ -91,7 +94,7 @@ class BatteryBuilder(SubsystemBuilderBase):
             f'{self.name}.{Dynamic.Vehicle.BATTERY_STATE_OF_CHARGE}': {
                 'type': 'boundary',
                 'loc': 'final',
-                'lower': 0.2,
+                'lower': 0.1,
             },
         }
         return constraint_dict

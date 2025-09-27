@@ -97,8 +97,9 @@ phase_info = {
     },
     'post_mission': {
         'include_landing': False,
+        'include_batteries': True,
         'constrain_range': True,
-        'target_range': (2_906.0, 'nmi'),
+        'target_range': (1906.0, 'nmi'),
     },
 }
 
@@ -146,18 +147,22 @@ if __name__ == '__main__':
     
     prob.model.set_val(Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS, 20_000, units='lbm')
     prob.model.set_val(Aircraft.Design.OPERATING_MASS, 175_400-80_000, units='lbm')
-    prob.set_val(av.Aircraft.Battery.PACK_ENERGY_DENSITY, 550, units='kJ/kg')
-    prob.set_val(av.Aircraft.Battery.PACK_MASS, 30_000, units='lbm')
+    prob.set_val(av.Aircraft.Battery.PACK_ENERGY_DENSITY, 360*3.6, units='kJ/kg')
+    prob.set_val(av.Aircraft.Battery.PACK_MASS, 28_000, units='lbm')
 
     prob.set_initial_guesses()
 
     prob.run_aviary_problem(suppress_solver_print=False)
     
-    print(f"TOTAL_PAYLOAD_MASS: {prob[Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS][0]:.0f}")
-    print(f"RANGE: {prob[Mission.Summary.RANGE][0]:.0f}")
-    print(f"FUEL_BURNED: {prob[Mission.Summary.FUEL_BURNED][0]:.0f}")
-    print(f"BATTERY_MASS: {prob[Aircraft.Battery.PACK_MASS][0]:.0f}")
-    print(f"OPERATING_MASS: {prob[Aircraft.Design.OPERATING_MASS][0]:.0f}")
-    print(f"GROSS_MASS: {prob[Mission.Design.GROSS_MASS][0]:.0f}")
+    print(f"RANGE: {prob[Mission.Summary.RANGE][0]:.0f} km")
+    print(f"TOTAL_PAYLOAD_MASS: {prob[Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS][0]:.0f} lbm")
+    print(f"TOTAL_FUEL_MASS: {prob[Mission.Summary.TOTAL_FUEL_MASS][0]:.0f} lbm")
+    print(f"TOTAL_BATTERY_MASS: {prob[Mission.Summary.TOTAL_BATTERY_MASS][0]:.0f} lbm")
+    print(f"OPERATING_MASS: {prob[Aircraft.Design.OPERATING_MASS][0]:.0f} lbm")
+    print(f"GROSS_MASS: {prob[Mission.Design.GROSS_MASS][0]:.0f} lbm")
+    
+    # print(f"BATTERY_SoC: {prob['traj.cruise.timeseries.battery_state_of_charge']:.0f} %")
+    print(prob['traj.cruise.timeseries.battery_state_of_charge'])
+    print(prob['traj.descent.timeseries.battery_state_of_charge'])
 
     print('done')

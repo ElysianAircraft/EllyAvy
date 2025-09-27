@@ -21,6 +21,8 @@ aircraft:wing:sweep,25.0,deg
 aircraft:wing:taper_ratio,0.278,unitless
 aircraft:wing:thickness_to_chord_dist,0.145,0.115,0.104,unitless
 
+aircraft:battery:discharge_limit,0.1,unitless
+
 mission:design:cruise_altitude,35000,ft
 mission:design:gross_mass,175400.0,lbm
 mission:design:range,3500,NM
@@ -33,4 +35,4 @@ settings:equations_of_motion,height_energy
 settings:aerodynamics_method,FLOPS
 settings:mass_method,FLOPS
 settings:payload_range,false
-settings:problem_type,sizing 
+settings:problem_type,sizing

@@ -756,6 +756,7 @@ class Mission:
         GROSS_MASS = 'mission:summary:gross_mass'
         RANGE = 'mission:summary:range'
         RESERVE_FUEL_BURNED = 'mission:summary:reserve_fuel_burned'
+        TOTAL_BATTERY_MASS = 'mission:summary:total_battery_mass'
         TOTAL_FUEL_MASS = 'mission:summary:total_fuel_mass'
 
     class Takeoff:

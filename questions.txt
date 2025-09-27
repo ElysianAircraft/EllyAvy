@@ -1,0 +1,1 @@
+1. How do we set a minimum state of charge? there's a discharge_limit variable but it doesn't seem to be used anywhere 
