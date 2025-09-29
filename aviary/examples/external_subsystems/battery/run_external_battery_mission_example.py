@@ -10,7 +10,7 @@ from aviary.variable_info.variables import Dynamic
 import aviary.api as av
 
 
-battery_builder = BatteryBuilder(include_constraints=False)
+battery_builder = BatteryBuilder(include_constraints=True)
 
 # add the battery model to each mission phase, as well as pre-mission for sizing
 phase_info['pre_mission']['external_subsystems'] = [battery_builder]
@@ -56,6 +56,8 @@ if __name__ == '__main__':
     # prob.model.set_val(Aircraft.Battery.PACK_MASS, 28_000, units='lbm')
 
     prob.run_aviary_problem()
+    
+    print(prob['traj.climb.rhs_all.battery.cell.dynamic:battery:state_of_charge'])
 
     # import numpy as np
     # print(np.round(prob[Mission.Summary.GROSS_MASS], 0))

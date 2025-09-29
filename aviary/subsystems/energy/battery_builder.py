@@ -41,9 +41,9 @@ class BatteryBuilder(SubsystemBuilderBase):
         # Here, the efficiency variable is used as an overall efficiency for the battery
         energy_capacity = om.ExecComp(
             'energy_capacity = pack_mass * pack_energy_density',
-            energy_capacity={'val': 10.0, 'units': 'kJ'},
-            pack_mass={'val': 10.0, 'units': 'lbm'},
-            pack_energy_density={'val': 10.0, 'units': 'kJ/kg'},
+            energy_capacity={'val': 10_000.0*320*3.6, 'units': 'kJ'},
+            pack_mass={'val': 20_000.0, 'units': 'lbm'},
+            pack_energy_density={'val': 320*3.6, 'units': 'kJ/kg'},
             has_diag_partials=True,
         )
         

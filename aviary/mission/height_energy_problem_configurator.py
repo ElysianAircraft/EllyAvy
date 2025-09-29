@@ -212,7 +212,7 @@ class HeightEnergyProblemConfigurator(ProblemConfiguratorBase):
             if initial_bounds[1]:
                 initial_ref = initial_bounds[1]
             else:
-                # TODO: Why were we using this value?
+                # TODO: Why were we using this value? MAGIC NUMBER
                 initial_ref = 600.0
 
         if duration_ref == 1.0:

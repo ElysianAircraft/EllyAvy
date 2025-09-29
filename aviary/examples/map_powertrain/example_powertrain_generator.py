@@ -109,7 +109,7 @@ def realistic_electric_power_function(mach: float, altitude_ft: float, throttle:
     # Base electric power at maximum throttle, sea level
     base_electric_power = 300.0  # kW
     
-    return base_electric_power * throttle_factor * mach_factor * altitude_factor / 4
+    return base_electric_power * throttle_factor * mach_factor * altitude_factor / 10
 
 
 def generate_realistic_powertrain():

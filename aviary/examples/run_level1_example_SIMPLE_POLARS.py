@@ -142,20 +142,20 @@ if __name__ == '__main__':
     prob.add_objective()
 
     prob.setup()
+
+    prob.set_initial_guesses()
     
     prob.model.set_val(Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS, 15_000, units='lbm')
     prob.model.set_val(Aircraft.Design.OPERATING_MASS, 50_000, units='lbm')
     
-    prob.model.set_val(Aircraft.Battery.PACK_ENERGY_DENSITY, 2*4360*3.6, units='kJ/kg')
-    prob.model.set_val(Aircraft.Battery.PACK_MASS, 28_000, units='lbm')
-
-    prob.set_initial_guesses()
+    prob.model.set_val(Aircraft.Battery.PACK_ENERGY_DENSITY, 320*3.6, units='kJ/kg')
+    prob.model.set_val(Aircraft.Battery.PACK_MASS, 20_000, units='lbm')
 
     prob.run_aviary_problem(suppress_solver_print=False,
                             run_driver=True)
     
-    print(f"RANGE: {prob[Mission.Objectives.RANGE][0]:.0f} nmi")
-    print(f"TOTAL_FUEL_MASS: {prob[Mission.Design.FUEL_MASS][0]:.0f} lbm")
+    print(f"RANGE: {prob[Mission.Summary.RANGE][0]:.0f} nmi")
+    print(f"TOTAL_FUEL_MASS: {prob[Mission.Summary.TOTAL_FUEL_MASS][0]:.0f} lbm")
     print(f"TOTAL_BATTERY_MASS: {prob[Mission.Design.BATTERY_MASS][0]:.0f} lbm")
     
     print(f"OPERATING_MASS: {prob[Aircraft.Design.OPERATING_MASS][0]:.0f} lbm")
