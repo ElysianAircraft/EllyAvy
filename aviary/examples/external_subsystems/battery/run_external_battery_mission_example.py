@@ -52,26 +52,26 @@ if __name__ == '__main__':
     
     prob.model.set_val(Aircraft.Design.OPERATING_MASS, 80_000, units='lbm')
     prob.model.set_val(Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS, 20_000, units='lbm')
-    prob.model.set_val(Aircraft.Battery.PACK_ENERGY_DENSITY, 4360*3.6, units='kJ/kg')
-    prob.model.set_val(Aircraft.Battery.PACK_MASS, 28_000, units='lbm')
+    # prob.model.set_val(Aircraft.Battery.PACK_ENERGY_DENSITY, 4360*3.6, units='kJ/kg')
+    # prob.model.set_val(Aircraft.Battery.PACK_MASS, 28_000, units='lbm')
 
     prob.run_aviary_problem()
 
-    import numpy as np
-    print(np.round(prob[Mission.Summary.GROSS_MASS], 0))
-    print(np.round(prob[Mission.Summary.TOTAL_FUEL_MASS], 0))
-    print(np.round(prob[Mission.Summary.FUEL_BURNED], 0))
-    print(np.round(prob[Mission.Summary.RANGE], 0))
+    # import numpy as np
+    # print(np.round(prob[Mission.Summary.GROSS_MASS], 0))
+    # print(np.round(prob[Mission.Summary.TOTAL_FUEL_MASS], 0))
+    # print(np.round(prob[Mission.Summary.FUEL_BURNED], 0))
+    # print(np.round(prob[Mission.Summary.RANGE], 0))
 
-    print(f"RANGE: {prob[Mission.Summary.RANGE][0]:.0f} km")
-    print(f"TOTAL_PAYLOAD_MASS: {prob[Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS][0]:.0f} lbm")
+    # print(f"RANGE: {prob[Mission.Summary.RANGE][0]:.0f} km")
+    # print(f"TOTAL_PAYLOAD_MASS: {prob[Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS][0]:.0f} lbm")
 
-    print("Running model first...")
+    # print("Running model first...")
     
-    print("Running check_totals to identify derivative issues...")
+    # print("Running check_totals to identify derivative issues...")
     
-    # Run check_totals to identify derivative problems
-    prob.check_totals(compact_print=True, show_only_incorrect=True)
+    # # Run check_totals to identify derivative problems
+    # prob.check_totals(compact_print=True, show_only_incorrect=True)
     
-    print('done')
-    print(prob)
+    # print('done')
+    # print(prob)

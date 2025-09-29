@@ -110,13 +110,13 @@ class BatteryBuilder(SubsystemBuilderBase):
 
     def get_constraints(self):
         constraint_dict = {
-            # # Can add constraints here; state of charge is a common one in many
-            # # battery applications
-            # f'{self.name}.{Dynamic.Vehicle.BATTERY_STATE_OF_CHARGE}': {
-            #     'type': 'boundary',
-            #     'loc': 'final',
-            #     'lower': 0.0,
-            # },
+            # Can add constraints here; state of charge is a common one in many
+            # battery applications
+            f'{self.name}.{Dynamic.Vehicle.BATTERY_STATE_OF_CHARGE}': {
+                'type': 'boundary',
+                'loc': 'final',
+                'lower': 0.0,
+            },
         }
         return constraint_dict
 

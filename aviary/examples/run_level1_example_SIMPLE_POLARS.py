@@ -1,7 +1,7 @@
 """Run the a mission with a simple external component that computes aircraft lift and drag."""
 
 import aviary.api as av
-from aviary.api import Aircraft, Dynamic, Mission
+from aviary.api import Aircraft, Mission
 from aviary.examples.external_subsystems.custom_aero.custom_aero_builder import CustomAeroBuilder
 from aviary.subsystems.energy.battery_builder import BatteryBuilder
 
@@ -96,7 +96,7 @@ phase_info = {
     'post_mission': {
         'include_landing': False,
         'include_batteries': True,
-        'constrain_range': True,
+        'constrain_range': False,
         'target_range': (1000.0, 'nmi'),
     },
 }
@@ -154,15 +154,16 @@ if __name__ == '__main__':
     prob.run_aviary_problem(suppress_solver_print=False,
                             run_driver=True)
     
-    print(f"RANGE: {prob[Mission.Summary.RANGE][0]:.0f} km")
-    print(f"TOTAL_PAYLOAD_MASS: {prob[Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS][0]:.0f} lbm")
-    print(f"TOTAL_FUEL_MASS: {prob[Mission.Summary.TOTAL_FUEL_MASS][0]:.0f} lbm")
+    print(f"RANGE: {prob[Mission.Objectives.RANGE][0]:.0f} nmi")
+    print(f"TOTAL_FUEL_MASS: {prob[Mission.Design.FUEL_MASS][0]:.0f} lbm")
     print(f"TOTAL_BATTERY_MASS: {prob[Mission.Design.BATTERY_MASS][0]:.0f} lbm")
+    
     print(f"OPERATING_MASS: {prob[Aircraft.Design.OPERATING_MASS][0]:.0f} lbm")
     print(f"GROSS_MASS: {prob[Mission.Design.GROSS_MASS][0]:.0f} lbm")
-    
+    print(f"TOTAL_PAYLOAD_MASS: {prob[Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS][0]:.0f} lbm")
+
     # print(f"BATTERY_SoC: {prob['traj.cruise.timeseries.battery_state_of_charge']:.0f} %")
     print(prob['traj.cruise.rhs_all.battery.battery_state_of_charge'])
-    print(prob['traj.descent.rhs_all.battery.battery_state_of_charge    '])
+    print(prob['traj.descent.rhs_all.battery.battery_state_of_charge'])
 
     print('done')
