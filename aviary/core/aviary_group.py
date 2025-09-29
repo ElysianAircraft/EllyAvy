@@ -819,17 +819,17 @@ class AviaryGroup(om.Group):
         # battery usage
         becomp = om.ExecComp(
             'TOTAL_BATTERY_MASS = energy_batteries / battery_energy_density',
-            energy_batteries={'units': 'J'},
+            energy_batteries={'units': 'kJ'},
             battery_energy_density={'units': 'kJ/kg'},
         )
         
-        if self.post_mission_info['include_batteries']:
+        if 'include_batteries' in self.post_mission_info.keys():
             post_mission.add_subsystem(
                 'batteries_used',
                 becomp,
                 promotes=[
                     ('battery_energy_density', Aircraft.Battery.PACK_ENERGY_DENSITY),
-                    ('TOTAL_BATTERY_MASS', Mission.Summary.TOTAL_BATTERY_MASS)],
+                    ('TOTAL_BATTERY_MASS', Mission.Design.BATTERY_MASS)],
             )
             
             self.connect(
@@ -978,9 +978,9 @@ class AviaryGroup(om.Group):
                 )
 
         ecomp = om.ExecComp(
-            'mass_resid = operating_empty_mass + overall_fuel + payload_mass - initial_mass',
+            'mass_resid = operating_empty_mass + overall_fuel + payload_mass + battery_mass - initial_mass',
             operating_empty_mass={'units': 'lbm'},
-            # battery_mass={'units': 'lbm'},
+            battery_mass={'units': 'lbm'},
             overall_fuel={'units': 'lbm'},
             payload_mass={'units': 'lbm'},
             initial_mass={'units': 'lbm'},
@@ -994,7 +994,7 @@ class AviaryGroup(om.Group):
             ecomp,
             promotes_inputs=[
                 ('operating_empty_mass', Aircraft.Design.OPERATING_MASS),
-                # ('battery_mass', Mission.Summary.TOTAL_BATTERY_MASS),
+                ('battery_mass', Mission.Design.BATTERY_MASS),
                 ('overall_fuel', Mission.Summary.TOTAL_FUEL_MASS),
                 ('payload_mass', payload_mass_src),
                 ('initial_mass', Mission.Summary.GROSS_MASS),
@@ -1233,6 +1233,7 @@ class AviaryGroup(om.Group):
             # size the vehicle (via design GTOW) to meet a target range using all fuel
             # capacity
             if self.problem_type is ProblemType.SIZING:
+                
                 self.add_design_var(
                     Mission.Design.GROSS_MASS,
                     lower=10.0,

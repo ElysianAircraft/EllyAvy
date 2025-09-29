@@ -418,9 +418,6 @@ class HeightEnergyProblemConfigurator(ProblemConfiguratorBase):
 
         if aviary_group.post_mission_info['include_landing']:
             self._add_landing_systems(aviary_group)
-            
-        if aviary_group.post_mission_info['include_batteries']:
-            ...
 
         aviary_group.add_subsystem(
             'range_constraint',

@@ -699,6 +699,7 @@ class Mission:
         FUEL_MASS = 'mission:design:fuel_mass'
         FUEL_MASS_REQUIRED = 'mission:design:fuel_mass_required'
         GROSS_MASS = 'mission:design:gross_mass'
+        BATTERY_MASS = 'mission:design:battery_mass'
         LIFT_COEFFICIENT = 'mission:design:lift_coefficient'
         LIFT_COEFFICIENT_MAX_FLAPS_UP = 'mission:design:lift_coefficient_max_flaps_up'
         MACH = 'mission:design:mach'

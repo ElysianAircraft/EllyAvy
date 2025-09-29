@@ -3,7 +3,7 @@ import openmdao.api as om
 
 from aviary.subsystems.energy.battery_sizing import SizeBattery
 from aviary.subsystems.subsystem_builder_base import SubsystemBuilderBase
-from aviary.variable_info.variables import Aircraft, Dynamic
+from aviary.variable_info.variables import Aircraft, Dynamic, Mission
 
 
 class BatteryBuilder(SubsystemBuilderBase):
@@ -39,6 +39,14 @@ class BatteryBuilder(SubsystemBuilderBase):
     def build_mission(self, num_nodes, aviary_inputs=None) -> om.Group:
         battery_group = om.Group()
         # Here, the efficiency variable is used as an overall efficiency for the battery
+        energy_capacity = om.ExecComp(
+            'energy_capacity = pack_mass * pack_energy_density',
+            energy_capacity={'val': 10.0, 'units': 'kJ'},
+            pack_mass={'val': 10.0, 'units': 'lbm'},
+            pack_energy_density={'val': 10.0, 'units': 'kJ/kg'},
+            has_diag_partials=True,
+        )
+        
         soc = om.ExecComp(
             'state_of_charge = (energy_capacity - (cumulative_electric_energy_used/efficiency)) / energy_capacity',
             state_of_charge={'val': np.zeros(num_nodes), 'units': 'unitless'},
@@ -46,6 +54,19 @@ class BatteryBuilder(SubsystemBuilderBase):
             cumulative_electric_energy_used={'val': np.zeros(num_nodes), 'units': 'kJ'},
             efficiency={'val': 0.95, 'units': 'unitless'},
             has_diag_partials=True,
+        )
+        
+        battery_group.add_subsystem(
+            'energy_capacity',
+            subsys=energy_capacity,
+            promotes_inputs=[
+                (
+                    'pack_mass',
+                    Mission.Design.BATTERY_MASS,
+                ),
+                ('pack_energy_density', Aircraft.Battery.PACK_ENERGY_DENSITY),
+            ],
+            promotes_outputs=[('energy_capacity', Aircraft.Battery.ENERGY_CAPACITY)],
         )
 
         battery_group.add_subsystem(
@@ -89,23 +110,20 @@ class BatteryBuilder(SubsystemBuilderBase):
 
     def get_constraints(self):
         constraint_dict = {
-            # Can add constraints here; state of charge is a common one in many
-            # battery applications
-            f'{self.name}.{Dynamic.Vehicle.BATTERY_STATE_OF_CHARGE}': {
-                'type': 'boundary',
-                'loc': 'final',
-                'lower': 0.1,
-            },
+            # # Can add constraints here; state of charge is a common one in many
+            # # battery applications
+            # f'{self.name}.{Dynamic.Vehicle.BATTERY_STATE_OF_CHARGE}': {
+            #     'type': 'boundary',
+            #     'loc': 'final',
+            #     'lower': 0.0,
+            # },
         }
         return constraint_dict
 
     def get_parameters(self, aviary_inputs=None, phase_info=None):
-        params = {
-            Aircraft.Battery.ENERGY_CAPACITY: {
-                'val': 0.0,
-                'units': 'kJ',
-            },
-        }
+        # Remove ENERGY_CAPACITY from parameters since it's calculated as an output
+        # from the energy_capacity component in build_mission
+        params = {}
         return params
 
     def get_linked_variables(self):

@@ -1,4 +1,4 @@
-aircraft:engine:data_file,models\aircraft\test_aircraft\turbofan_28k_with_electric.csv,unitless
+aircraft:engine:data_file,examples\map_powertrain\realistic_hybrid_turbofan.csv,unitless
 
 aircraft:engine:flight_idle_min_fraction,0.08,unitless
 
@@ -24,7 +24,7 @@ aircraft:wing:thickness_to_chord_dist,0.145,0.115,0.104,unitless
 aircraft:battery:discharge_limit,0.1,unitless
 
 mission:design:cruise_altitude,35000,ft
-mission:design:gross_mass,175400.0,lbm
+mission:design:gross_mass,150_000.0,lbm
 mission:design:range,3500,NM
 
 mission:summary:cruise_mach,0.785,unitless
