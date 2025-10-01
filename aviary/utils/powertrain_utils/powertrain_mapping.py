@@ -85,6 +85,7 @@ class PowertrainMapper:
         fuel_flow_function: Callable[[float, float, float], float],
         nox_rate_function: Callable[[float, float, float], float],
         electric_power_function: Callable[[float, float, float], float],
+        shaft_power_ratio_function: Optional[Callable[[float, float, float], float]] = None,
         description: str = "Custom powertrain mapping file",
         author: str = "PowertrainMapper"
     ) -> None:
@@ -105,6 +106,9 @@ class PowertrainMapper:
             Function that returns NOx rate (lb/h) given (mach, altitude_ft, throttle)
         electric_power_function : callable
             Function that returns electric power (kW) given (mach, altitude_ft, throttle)
+        shaft_power_ratio_function : callable, optional
+            Function that returns shaft power ratio (-) given (mach, altitude_ft, throttle).
+            If None, defaults to 1.0 for all conditions.
         description : str
             Description to include in the file header
         author : str
@@ -127,7 +131,7 @@ class PowertrainMapper:
             csvfile.write("\n")
             
             # Write column headers
-            csvfile.write("Mach_Number, Altitude (ft),   Throttle, Gross_Thrust (lbf), Ram_Drag (lbf), Fuel_Flow (lb/h), NOx_Rate (lb/h), Electric_Power (kW)\n")
+            csvfile.write("Mach_Number, Altitude (ft), Shaft_Power_Ratio (-),   Throttle, Gross_Thrust (lbf), Ram_Drag (lbf), Fuel_Flow (lb/h), NOx_Rate (lb/h), Electric_Power (kW)\n")
             
             # Generate data points
             point_count = 0
@@ -141,8 +145,14 @@ class PowertrainMapper:
                         nox_rate = nox_rate_function(mach, altitude, throttle)
                         electric_power = electric_power_function(mach, altitude, throttle)
                         
+                        # Calculate shaft power ratio (default to 1.0 if not provided)
+                        if shaft_power_ratio_function is not None:
+                            shaft_power_ratio = shaft_power_ratio_function(mach, altitude, throttle)
+                        else:
+                            shaft_power_ratio = 1.0
+                        
                         # Write data row
-                        csvfile.write(f"{mach:9.1f}, {altitude:11.1f}, {throttle:8.1f}, {thrust:15.1f}, {drag:13.1f}, {fuel_flow:13.1f}, {nox_rate:11.4f}, {electric_power:15.3f}\n")
+                        csvfile.write(f"{mach:9.1f}, {altitude:11.1f}, {shaft_power_ratio:18.6f}, {throttle:8.1f}, {thrust:15.1f}, {drag:13.1f}, {fuel_flow:13.1f}, {nox_rate:11.4f}, {electric_power:15.3f}\n")
                         
                         point_count += 1
                         if point_count % 100 == 0:

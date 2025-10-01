@@ -6,7 +6,7 @@ This script shows how to create custom powertrain mapping files with user-define
 performance functions.
 """
 
-from aviary.utils.powertrain_mapping import PowertrainMapper
+from aviary.utils.powertrain_utils.powertrain_mapping import PowertrainMapper
 
 
 def realistic_thrust_function(mach: float, altitude_ft: float, throttle: float) -> float:
@@ -112,6 +112,16 @@ def realistic_electric_power_function(mach: float, altitude_ft: float, throttle:
     return base_electric_power * throttle_factor * mach_factor * altitude_factor / 10
 
 
+def realistic_shaft_power_ratio_function(mach: float, altitude_ft: float, throttle: float) -> float:
+    """
+    Example shaft power ratio function.
+    
+    For this example, we set it to 1.0 for all conditions.
+    In a real application, this could vary based on operating conditions.
+    """
+    return 1.0
+
+
 def generate_realistic_powertrain():
     """Generate a realistic powertrain mapping file."""
     
@@ -139,6 +149,7 @@ def generate_realistic_powertrain():
         fuel_flow_function=realistic_fuel_flow_function,
         nox_rate_function=realistic_nox_rate_function,
         electric_power_function=realistic_electric_power_function,
+        shaft_power_ratio_function=realistic_shaft_power_ratio_function,
         description="Realistic hybrid turbofan powertrain mapping file",
         author="PowertrainMapper Example"
     )
@@ -171,6 +182,7 @@ def generate_custom_powertrain():
         fuel_flow_function=realistic_fuel_flow_function,
         nox_rate_function=realistic_nox_rate_function,
         electric_power_function=realistic_electric_power_function,
+        shaft_power_ratio_function=realistic_shaft_power_ratio_function,
         description="Custom high-speed powertrain mapping file",
         author="PowertrainMapper Custom Example"
     )
