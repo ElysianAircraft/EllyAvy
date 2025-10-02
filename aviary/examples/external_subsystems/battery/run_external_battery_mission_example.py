@@ -5,8 +5,9 @@ from aviary.examples.external_subsystems.battery.battery_builder import BatteryB
 from aviary.examples.external_subsystems.battery.battery_variable_meta_data import ExtendedMetaData
 from aviary.interface.methods_for_level2 import AviaryProblem
 from aviary.utils.functions import get_aviary_resource_path
+from aviary.variable_info.variables import Aircraft, Dynamic, Mission
 
-battery_builder = BatteryBuilder(include_constraints=False)
+battery_builder = BatteryBuilder(include_constraints=True)
 
 # add the battery model to each mission phase, as well as pre-mission for sizing
 phase_info['pre_mission']['external_subsystems'] = [battery_builder]
@@ -20,7 +21,7 @@ if __name__ == '__main__':
     # Load aircraft and options data from user
     # Allow for user overrides here
     input_file = get_aviary_resource_path(
-        'models/aircraft/test_aircraft/aircraft_for_bench_FwFm.csv'
+        'models/aircraft/test_aircraft/aircraft_for_bench_FwFm_with_electric.csv'
     )
     prob.load_inputs(input_file, phase_info, meta_data=ExtendedMetaData)
 
@@ -39,3 +40,9 @@ if __name__ == '__main__':
     prob.setup()
 
     prob.run_aviary_problem()
+    import numpy as np
+    print(np.round(prob.get_val('aircraft:battery:energy_required'), 2))
+    print(np.round(prob.get_val(Aircraft.Battery.MASS), 2))
+    print(np.round(prob.get_val(Mission.Summary.GROSS_MASS), 2))
+    print(np.round(prob.get_val(Aircraft.Design.OPERATING_MASS), 2))
+    print(np.round(prob.get_val(Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS), 2))

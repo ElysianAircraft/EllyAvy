@@ -78,6 +78,17 @@ class BatteryBuilder(SubsystemBuilderBase):
                 'defect_ref': 1.0e5,
                 'ref': 1.0e5,
             },
+            Dynamic.Vehicle.CUMULATIVE_ELECTRIC_ENERGY_USED: {
+                'fix_initial': True,
+                'fix_final': False,
+                'lower': 0.0,
+                'ref': 1e4,
+                'defect_ref': 1e6,
+                'units': 'kJ',
+                'rate_source': Dynamic.Vehicle.Propulsion.ELECTRIC_POWER_IN_TOTAL,
+                'input_initial': 0.0,
+                'targets': f'{self.name}.{Dynamic.Vehicle.CUMULATIVE_ELECTRIC_ENERGY_USED}',
+            }
         }
 
         return states_dict
@@ -179,6 +190,10 @@ class BatteryBuilder(SubsystemBuilderBase):
                 'lower': 0.0,
                 'upper': 2.0,
             },
+            Aircraft.Battery.PACK_MASS: {
+                'units': 'kg',
+                'lower': 0.0,
+            }
         }
 
         return DVs

@@ -55,15 +55,18 @@ class CoreMassBuilder(MassBuilderBase):
         code_origin = self.code_origin
         try:
             method = kwargs['method']
+            print(f'!!!!!!!!!!!!!!!!!!! method: {method}')
         except KeyError:
             method = None
         mass_group = None
 
         if method != 'external':
             if code_origin is GASP:
+                print('GASP')
                 mass_group = MassPremissionGASP()
 
             elif code_origin is FLOPS:
+                print('FLOPS')
                 mass_group = MassPremissionFLOPS()
 
         return mass_group

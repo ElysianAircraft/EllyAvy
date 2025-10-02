@@ -38,7 +38,7 @@ if __name__ == '__main__':
     prob.build_model()
 
     # Note, SLSQP has trouble here.
-    prob.add_driver('IPOPT')
+    prob.add_driver('SLSQP')
 
     prob.add_design_variables()
 

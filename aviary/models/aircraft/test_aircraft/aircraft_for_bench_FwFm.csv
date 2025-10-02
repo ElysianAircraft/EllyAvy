@@ -126,7 +126,6 @@ aircraft:wing:load_distribution_control,2.0,unitless
 aircraft:wing:load_fraction,1.0,unitless
 aircraft:wing:load_path_sweep_dist,0.,22.,deg
 aircraft:wing:mass_scaler,1.23,unitless
-aircraft:wing:max_camber_at_70_semispan,0.0,unitless
 aircraft:wing:misc_mass_scaler,1.0,unitless
 aircraft:wing:num_integration_stations,50,unitless
 aircraft:wing:shear_control_mass_scaler,1.0,unitless

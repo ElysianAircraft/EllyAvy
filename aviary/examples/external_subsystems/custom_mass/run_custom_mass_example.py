@@ -4,10 +4,22 @@ from copy import deepcopy
 
 import aviary.api as av
 from aviary.examples.external_subsystems.custom_mass.custom_mass_builder import WingMassBuilder
+from aviary.examples.external_subsystems.custom_aero.custom_aero_builder import CustomAeroBuilder
 
 phase_info = deepcopy(av.default_height_energy_phase_info)
+
+phase_info.pop('climb')
+phase_info.pop('descent')
+
 # Here we just add the simple weight system to only the pre-mission
-phase_info['pre_mission']['external_subsystems'] = [WingMassBuilder()]
+# phase_info['pre_mission']['external_subsystems'] = [WingMassBuilder()]
+# phase_info['pre_mission']['subsystem_options']=\
+#         {'core_mass': {
+#     'method': 'external'}}
+phase_info['cruise']['external_subsystems'] = [CustomAeroBuilder()]
+phase_info['cruise']['subsystem_options']=\
+        {'core_aerodynamics': {
+    'method': 'external'}}
 
 if __name__ == '__main__':
     prob = av.AviaryProblem()
@@ -18,7 +30,7 @@ if __name__ == '__main__':
 
     prob.check_and_preprocess_inputs()
 
-    prob.build_model()
+    prob.build_model() # adding premission, mission and post-mission systems
 
     prob.add_driver('SLSQP')
 

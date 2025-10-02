@@ -551,7 +551,9 @@ class AviaryGroup(om.Group):
         # Loop through all the phases in this subsystem.
         for external_subsystem in self.pre_mission_info['external_subsystems']:
             # Get all the subsystem builders for this phase.
+            
             subsystem_premission = external_subsystem.build_pre_mission(self.aviary_inputs)
+
 
             if subsystem_premission is not None:
                 self.pre_mission.add_subsystem(external_subsystem.name, subsystem_premission)
