@@ -1,7 +1,7 @@
 import numpy as np
 import openmdao.api as om
 
-from aviary.subsystems.energy.battery_sizing import SizeBattery, EnergyCapacity, StateofCharge
+from aviary.subsystems.energy.battery_sizing import SizeBattery
 from aviary.subsystems.subsystem_builder_base import SubsystemBuilderBase
 from aviary.variable_info.variables import Aircraft, Dynamic
 
@@ -29,6 +29,7 @@ class BatteryBuilder(SubsystemBuilderBase):
     """
 
     default_name = 'battery'
+    name = 'battery'
 
     def build_pre_mission(self, aviary_inputs=None):
         return SizeBattery(aviary_inputs=aviary_inputs)
@@ -61,31 +62,6 @@ class BatteryBuilder(SubsystemBuilderBase):
             ],
             promotes_outputs=[('state_of_charge', Dynamic.Vehicle.BATTERY_STATE_OF_CHARGE)],
         )
-        
-        # energy_capacity = om.ExecComp(
-        #     'energy_capacity = pack_mass * pack_energy_density',
-        #     energy_capacity={'val': 0.0, 'units': 'kJ'},
-        #     pack_mass={'val': 3_000.0, 'units': 'kg'},
-        #     pack_energy_density={'val': 320.0*3.6, 'units': 'kJ/kg'},
-        #     has_diag_partials=True,
-        # )
-
-        # battery_group.add_subsystem(
-        #     'energy_capacity',
-        #     subsys=EnergyCapacity(aviary_inputs=aviary_inputs),
-        #     promotes_inputs=[Aircraft.Battery.MASS, Aircraft.Battery.PACK_ENERGY_DENSITY],
-        #     promotes_outputs=[Aircraft.Battery.ENERGY_CAPACITY],
-        # )
-        
-        # battery_group.add_subsystem(
-        #     'state_of_charge',
-        #     subsys=StateofCharge(aviary_inputs=aviary_inputs, num_nodes=num_nodes),
-        #     promotes_inputs=[Aircraft.Battery.ENERGY_CAPACITY,
-        #                      Dynamic.Vehicle.CUMULATIVE_ELECTRIC_ENERGY_USED,
-        #                      Aircraft.Battery.EFFICIENCY,
-        #     ],
-        #     promotes_outputs=[Dynamic.Vehicle.BATTERY_STATE_OF_CHARGE],
-        # )
 
         return battery_group
 
@@ -120,40 +96,13 @@ class BatteryBuilder(SubsystemBuilderBase):
             },
         }
         return constraint_dict
-    
-    def get_design_vars(self):
-        """
-        Return a dictionary of design variables for the subsystem.
-
-        Optional
-
-        Not currently used.
-
-        Returns
-        -------
-        design_vars : dict
-            A dictionary where the keys are the names of the design variables
-            and the values are dictionaries with the following keys:
-
-            - any additional keyword arguments required by OpenMDAO for the design
-              variable.
-        """
-        pack_dict = {
-            'units': 'kg',
-            'lower': 0,
-            'ref': 1,
-        }  # upper and lower are just notional for now
-        design_vars = {
-            Aircraft.Battery.PACK_MASS: pack_dict,
-        }
-        return design_vars
 
     def get_parameters(self, aviary_inputs=None, phase_info=None):
         params = {
-            # Aircraft.Battery.ENERGY_CAPACITY: {
-            #     'val': 30_000.0,
-            #     'units': 'kJ',
-            # },
+            Aircraft.Battery.ENERGY_CAPACITY: {
+                'val': 0.0,
+                'units': 'kJ',
+            },
         }
         return params
 

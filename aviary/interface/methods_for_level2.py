@@ -380,7 +380,7 @@ class AviaryProblem(om.Problem):
         else:
             self.model.link_phases(verbosity=verbosity, comm=self.comm)
 
-    def add_driver(self, optimizer=None, use_coloring=None, max_iter=50, verbosity=None):
+    def add_driver(self, optimizer=None, use_coloring=None, max_iter=100, verbosity=None):
         """
         Add an optimization driver to the Aviary problem.
 
@@ -637,13 +637,14 @@ class AviaryProblem(om.Problem):
             ref = ref if ref is not None else default_ref_values.get(objective_type, 1)
 
             final_phase_name = self.model.regular_phases[-1]
-
+            
             if objective_type == 'mass':
                 self.model.add_objective(
                     f'traj.{final_phase_name}.timeseries.{Dynamic.Vehicle.MASS}',
                     index=-1,
                     ref=ref,
                 )
+
             elif objective_type == 'time':
                 self.model.add_objective(
                     f'traj.{final_phase_name}.timeseries.time', index=-1, ref=ref
@@ -653,11 +654,31 @@ class AviaryProblem(om.Problem):
                 self._add_hybrid_objective(self.model.phase_info)
                 self.model.add_objective('obj_comp.obj')
 
+            elif objective_type == 'battery_fuel':
+                soc = om.ExecComp(
+                    'obj = (battery_mass + fuel_mass)/10_000',
+                    obj={'val': 0.0, 'units': 'lbm'},
+                    battery_mass={'val': 1.0, 'units': 'lbm'},
+                    fuel_mass={'val': 1.0, 'units': 'lbm'},
+                    has_diag_partials=True,
+                )
+                self.model.add_subsystem('obj_comp', 
+                                         subsys=soc,
+                                         promotes_inputs=[
+                                            ('battery_mass', Aircraft.Battery.MASS),
+                                            ('fuel_mass', Mission.Summary.FUEL_BURNED),
+                                         ]
+                                         )
+                self.model.add_objective('obj_comp.obj')                
+                
             elif objective_type == 'fuel_burned':
                 self.model.add_objective(Mission.Summary.FUEL_BURNED, ref=ref)
 
             elif objective_type == 'fuel':
                 self.model.add_objective(Mission.Objectives.FUEL, ref=ref)
+                
+            elif objective_type == 'batteries':
+                self.model.add_objective(Aircraft.Battery.MASS, ref=ref)
 
             else:
                 raise ValueError(

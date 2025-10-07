@@ -1,14 +1,15 @@
 """Example mission using the a detailed battery model."""
 
 from aviary.api import default_height_energy_phase_info as phase_info
-from aviary.examples.external_subsystems.battery.battery_builder import BatteryBuilder
+# from aviary.examples.external_subsystems.battery.battery_builder import BatteryBuilder
+from aviary.subsystems.energy.battery_builder import BatteryBuilder
 from aviary.examples.external_subsystems.battery.battery_variable_meta_data import ExtendedMetaData
 from aviary.interface.methods_for_level2 import AviaryProblem
 from aviary.utils.functions import get_aviary_resource_path
 from aviary.variable_info.variables import Aircraft, Mission
 from aviary.examples.external_subsystems.battery.battery_variables import Dynamic
 
-battery_builder = BatteryBuilder(include_constraints=True)
+battery_builder = BatteryBuilder()
 
 # add the battery model to each mission phase, as well as pre-mission for sizing
 phase_info['pre_mission']['external_subsystems'] = [battery_builder]
@@ -34,7 +35,7 @@ if __name__ == '__main__':
 
     prob.add_design_variables()
 
-    prob.add_objective('mass')
+    prob.add_objective()
     # prob.model.add_objective(
     #     f'traj.climb.states:{Dynamic.Battery.STATE_OF_CHARGE}', index=-1, ref=-1)
 
@@ -42,9 +43,9 @@ if __name__ == '__main__':
 
     prob.run_aviary_problem()
     import numpy as np
-    print(np.round(prob.get_val('aircraft:battery:energy_required'), 2))
+    # print(np.round(prob.get_val('aircraft:battery:energy_required'), 2))
     print(np.round(prob.get_val(Aircraft.Battery.MASS), 2))
     print(np.round(prob.get_val(Mission.Summary.GROSS_MASS), 2))
     print(np.round(prob.get_val(Aircraft.Design.OPERATING_MASS), 2))
     print(np.round(prob.get_val(Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS), 2))
-    print(np.round(prob.get_val('traj.descent.timeseries.dynamic:battery:state_of_charge'), 2))
+    print(np.round(prob.get_val('traj.descent.timeseries.cumulative_electric_energy_used'), 2))

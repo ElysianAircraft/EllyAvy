@@ -1286,6 +1286,17 @@ class AviaryGroup(om.Group):
             # size the vehicle (via design GTOW) to meet a target range using all fuel
             # capacity
             if problem_type is ProblemType.SIZING:
+                for isub in self.get_all_subsystems():
+                    if isub.default_name == 'battery':
+                        print("!!! Adding design variable for battery mass !!!")
+                        self.add_design_var(
+                            Aircraft.Battery.PACK_MASS,
+                            lower=10.0,
+                            upper=None,
+                            units='kg',
+                            ref=1e2,
+                        )
+                
                 self.add_design_var(
                     Mission.Design.GROSS_MASS,
                     lower=10.0,

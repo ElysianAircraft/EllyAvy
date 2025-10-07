@@ -102,7 +102,8 @@ if __name__ == '__main__':
 
     prob.add_design_variables()
 
-    prob.add_objective()
+    prob.add_objective('mass',
+                       ref=1)
     # prob.model.add_objective(
     #     f'traj.climb.states:{Dynamic.Battery.STATE_OF_CHARGE}', index=-1, ref=-1)
     
@@ -110,18 +111,44 @@ if __name__ == '__main__':
     
     # prob.driver.options['debug_print'] = ['desvars']
 
-    prob.model.set_val(Aircraft.Battery.PACK_MASS, 10_000, units='kg')
-    prob.model.set_val(Aircraft.Battery.PACK_ENERGY_DENSITY, 320*3.6, units='kJ/kg')
+    prob.model.set_val(Aircraft.Battery.PACK_MASS, 30_000, units='lbm')
+    prob.model.set_val(Aircraft.Battery.PACK_ENERGY_DENSITY, 320*3.6*0.453, units='kJ/lbm')
     
     prob.run_aviary_problem()
+    # prob.run_model()
+    # prob.check_totals(compact_print=True, show_only_incorrect=True)
 
     import numpy as np
-    print("Battery Pack Mass:",np.round(prob.get_val(Aircraft.Battery.PACK_MASS), 2))
-    print("Battery Energy Capacity:",np.round(prob.get_val(Aircraft.Battery.ENERGY_CAPACITY), 2))
-    print("Operating Mass:",np.round(prob.get_val(Aircraft.Design.OPERATING_MASS), 2))
-    print("Payload Mass:",np.round(prob.get_val(Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS), 2))
-    print("Gross Mass:",np.round(prob.get_val(Mission.Summary.GROSS_MASS), 2))
     print("Range:",np.round(prob.get_val(Mission.Summary.RANGE), 2))
-    print("Cumulative Electric Energy Used:",
-          np.round(prob.get_val(f'traj.descent.timeseries.{Dynamic.Vehicle.CUMULATIVE_ELECTRIC_ENERGY_USED}'), 2))
+    # print("Cumulative Electric Energy Used:",
+    #       np.round(prob.get_val(f'traj.descent.timeseries.{Dynamic.Vehicle.CUMULATIVE_ELECTRIC_ENERGY_USED}'), 2))
     print("Battery State of Charge:",np.round(prob.get_val('traj.descent.timeseries.battery_state_of_charge'), 2))
+    
+    M_gross = prob.get_val(Mission.Summary.GROSS_MASS)
+    M_OEM = prob.get_val(Aircraft.Design.OPERATING_MASS)
+    M_PL = prob.get_val(Aircraft.CrewPayload.TOTAL_PAYLOAD_MASS)
+    M_BAT = prob.get_val(Aircraft.Battery.MASS)
+    M_F = prob.get_val(Mission.Summary.TOTAL_FUEL_MASS)
+    
+    final_phase_name = 'descent'
+    masses = ['gross_mass', 'operating_mass', 'total_payload_mass', 'battery:mass', 'total_fuel_mass',
+              f'timeseries.{Dynamic.Vehicle.MASS}']
+
+    # for name, meta in prob.model.get_io_metadata(iotypes='input').items():
+    #     for imassname in masses:
+    #         if imassname in name:
+    #             print(name, meta['units'])
+            
+    # for name, meta in prob.model.get_io_metadata(iotypes='output').items():
+    #     for imassname in masses:
+    #         if imassname in name:
+    #             print(name, meta['units'])
+        
+    print("Timeseries mass:",np.round(prob.get_val(f'traj.{final_phase_name}.timeseries.{Dynamic.Vehicle.MASS}'), 2))
+    print("M_gross:",np.round(M_gross, 2))
+    print("M_PL:",np.round(M_PL, 2))
+    print("M_OEM:",np.round(M_OEM, 2))
+    print("M_BAT:",np.round(M_BAT, 2))
+    print("M_F:",np.round(M_F, 2))
+    print("M_gross - (M_PL + M_OEM + M_F):",np.round(M_gross - (M_PL + M_OEM + M_F), 2))
+    print("Gross Mass:",np.round(prob.get_val(Mission.Summary.GROSS_MASS), 2))
