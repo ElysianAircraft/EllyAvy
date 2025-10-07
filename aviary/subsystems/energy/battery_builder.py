@@ -29,7 +29,6 @@ class BatteryBuilder(SubsystemBuilderBase):
     """
 
     default_name = 'battery'
-    name = 'battery'
 
     def build_pre_mission(self, aviary_inputs=None):
         return SizeBattery(aviary_inputs=aviary_inputs)

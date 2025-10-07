@@ -119,10 +119,6 @@ if __name__ == '__main__':
     # prob.check_totals(compact_print=True, show_only_incorrect=True)
 
     import numpy as np
-    print("Range:",np.round(prob.get_val(Mission.Summary.RANGE), 2))
-    # print("Cumulative Electric Energy Used:",
-    #       np.round(prob.get_val(f'traj.descent.timeseries.{Dynamic.Vehicle.CUMULATIVE_ELECTRIC_ENERGY_USED}'), 2))
-    print("Battery State of Charge:",np.round(prob.get_val('traj.descent.timeseries.battery_state_of_charge'), 2))
     
     M_gross = prob.get_val(Mission.Summary.GROSS_MASS)
     M_OEM = prob.get_val(Aircraft.Design.OPERATING_MASS)
@@ -131,18 +127,9 @@ if __name__ == '__main__':
     M_F = prob.get_val(Mission.Summary.TOTAL_FUEL_MASS)
     
     final_phase_name = 'descent'
-    masses = ['gross_mass', 'operating_mass', 'total_payload_mass', 'battery:mass', 'total_fuel_mass',
-              f'timeseries.{Dynamic.Vehicle.MASS}']
 
-    # for name, meta in prob.model.get_io_metadata(iotypes='input').items():
-    #     for imassname in masses:
-    #         if imassname in name:
-    #             print(name, meta['units'])
-            
-    # for name, meta in prob.model.get_io_metadata(iotypes='output').items():
-    #     for imassname in masses:
-    #         if imassname in name:
-    #             print(name, meta['units'])
+    print("Range:",np.round(prob.get_val(Mission.Summary.RANGE), 2))
+    print("Battery State of Charge:",np.round(prob.get_val('traj.descent.timeseries.battery_state_of_charge'), 2))
         
     print("Timeseries mass:",np.round(prob.get_val(f'traj.{final_phase_name}.timeseries.{Dynamic.Vehicle.MASS}'), 2))
     print("M_gross:",np.round(M_gross, 2))
