@@ -90,7 +90,7 @@ if __name__ == '__main__':
     # Load aircraft and options data from user
     # Allow for user overrides here
     input_file = get_aviary_resource_path(
-        'models/aircraft/test_aircraft/aircraft_for_bench_FwFm_with_electric.csv'
+        'models/aircraft/test_aircraft/trial_simple.csv'
     )
     prob.load_inputs(input_file, phase_info)
 
@@ -114,8 +114,8 @@ if __name__ == '__main__':
     prob.model.set_val(Aircraft.Battery.PACK_MASS, 30_000, units='lbm')
     prob.model.set_val(Aircraft.Battery.PACK_ENERGY_DENSITY, 320*3.6*0.453, units='kJ/lbm')
     
-    prob.run_aviary_problem()
-    # prob.run_model()
+    # prob.run_aviary_problem()
+    prob.run_model()
     # prob.check_totals(compact_print=True, show_only_incorrect=True)
 
     import numpy as np
