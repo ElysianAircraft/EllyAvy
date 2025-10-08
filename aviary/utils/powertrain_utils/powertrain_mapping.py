@@ -45,6 +45,25 @@ import numpy as np
 from datetime import datetime
 from typing import Callable, List, Optional, Union
 from pathlib import Path
+from dataclasses import dataclass
+from typing import Dict
+@dataclass
+class PowertrainConfig:
+    """
+    Configuration class for powertrain parameters.
+    
+    Attributes
+    ----------
+    config : str
+        Powertrain configuration type ('serial', 'parallel', 'turboelectric', etc.)
+    etas : dict
+        Component efficiencies
+    P_inst : float
+        Installed power in Watts
+    """
+    config: str
+    etas: Dict[str, float]
+    P_inst: float
 
 
 class PowertrainMapper:

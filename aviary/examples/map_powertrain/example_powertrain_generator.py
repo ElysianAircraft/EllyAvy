@@ -17,42 +17,23 @@ Date: 2025-10-08
 import numpy as np
 from dataclasses import dataclass
 from typing import Dict
-from aviary.utils.powertrain_utils.powertrain_mapping import PowertrainMapper
+from aviary.utils.powertrain_utils.powertrain_mapping import PowertrainMapper, PowertrainConfig
 from aviary.utils.powertrain_utils.component_matices import power_transmission_computation
-
-
-@dataclass
-class PowertrainConfig:
-    """
-    Configuration class for powertrain parameters.
-    
-    Attributes
-    ----------
-    config : str
-        Powertrain configuration type ('serial', 'parallel', 'turboelectric', etc.)
-    etas : dict
-        Component efficiencies
-    P_inst : float
-        Installed power in Watts
-    """
-    config: str
-    etas: Dict[str, float]
-    P_inst: float
 
 
 # Global configuration for the serial hybrid powertrain
 SERIAL_HYBRID_CONFIG = PowertrainConfig(
     config='serial',
     etas={
-        'GT': 0.90,
-        'GB': 0.90,
-        'P1': 0.90,
-        'EM1': 0.90,
-        'PM': 0.90,
-        'EM2': 0.90,
-        'P2': 0.90
+        'GT': 0.3,
+        'GB': 1.0,
+        'P1': 0.86,
+        'EM1': 0.95,
+        'PM': 0.98,
+        'EM2': 0.95,
+        'P2': 0.86
     },
-    P_inst=1.65e6  # 1.65 MW
+    P_inst=1.65e6*6  # 1.65 MW
 )
 
 
